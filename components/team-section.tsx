@@ -2,7 +2,10 @@
 
 import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { ChevronDown, ChevronUp } from "lucide-react"
 import Image from "next/image"
+import { useState } from "react"
 
 const teamMembers = [
   {
@@ -32,6 +35,9 @@ const teamMembers = [
 ]
 
 export function TeamSection() {
+  const [isExpanded, setIsExpanded] = useState(false)
+  const displayedMembers = isExpanded ? teamMembers : teamMembers.slice(0, 4)
+
   return (
     <section id="team" className="py-20 relative">
       <div className="container mx-auto px-4">
@@ -48,12 +54,13 @@ export function TeamSection() {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {teamMembers.map((member, index) => (
+          {displayedMembers.map((member, index) => (
             <motion.div
               key={member.name}
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
+              layout
             >
               <Card className="bg-gray-900/50 border-orange-500/20 hover:border-orange-500/50 transition-all duration-300 group overflow-hidden">
                 <CardContent className="p-0 relative">
@@ -76,6 +83,33 @@ export function TeamSection() {
             </motion.div>
           ))}
         </div>
+
+        {teamMembers.length > 4 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="text-center mt-12"
+          >
+            <Button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="bg-orange-500/20 hover:bg-orange-500/30 border border-orange-500/50 hover:border-orange-500 text-orange-400 hover:text-orange-300 px-8 py-3 text-lg transition-all duration-300"
+              size="lg"
+            >
+              {isExpanded ? (
+                <>
+                  <ChevronUp className="w-5 h-5 mr-2" />
+                  Show Less Veterans
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="w-5 h-5 mr-2" />
+                  Show All Veterans ({teamMembers.length - 4} more)
+                </>
+              )}
+            </Button>
+          </motion.div>
+        )}
       </div>
     </section>
   )
